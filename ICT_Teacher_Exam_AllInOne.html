@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Teacher Exam — Study App (PED050)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+  :root{
+    --navy:#1f3864; --blue:#2e5496; --accent:#2e86de; --light:#deeaf6;
+    --grey:#f2f4f8; --green:#2e7d32; --red:#c0392b; --ink:#1a2230; --muted:#5b6675;
+    --card:#ffffff; --line:#e2e8f2; --shadow:0 2px 14px rgba(31,56,100,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter','Noto Sans Khmer',sans-serif;color:var(--ink);
+    background:linear-gradient(180deg,#eef3fb,#f7f9fc 240px);line-height:1.6;padding-bottom:60px}
+  .kh{font-family:'Noto Sans Khmer','Inter',sans-serif}
+  header{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;
+    padding:34px 20px 26px;text-align:center;box-shadow:var(--shadow)}
+  header .tag{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+    padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:12px}
+  header h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
+  header .sub{font-size:15px;opacity:.9;margin-top:6px}
+  header .kh-sub{font-size:15px;opacity:.95;margin-top:4px}
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:0 8px;box-shadow:0 1px 8px rgba(0,0,0,.04)}
+  nav button{flex:0 0 auto;background:none;border:none;padding:14px 16px;font-size:14px;font-weight:600;
+    color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;font-family:inherit;white-space:nowrap;transition:.15s}
+  nav button:hover{color:var(--blue)}
+  nav button.active{color:var(--navy);border-bottom-color:var(--accent)}
+  main{max-width:820px;margin:0 auto;padding:24px 18px}
+  .panel{display:none;animation:fade .25s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h2.sec{font-size:22px;color:var(--navy);margin:8px 0 4px;font-weight:700}
+  h3{font-size:17px;color:var(--blue);margin:22px 0 10px;font-weight:600;
+    padding-left:11px;border-left:4px solid var(--accent)}
+  p.lead{color:var(--muted);margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:14px 0;box-shadow:var(--shadow)}
+  .qa{border-left:5px solid var(--blue);background:var(--grey);border-radius:0 12px 12px 0;
+    padding:14px 18px;margin:12px 0}
+  .qa .q{font-weight:600;color:var(--navy)}
+  .qa .qe{font-size:13px;color:var(--muted);margin:2px 0 8px}
+  .qa .a{color:var(--ink)}
+  .qa .a b{color:var(--green)}
+  ul.clean{list-style:none;margin:8px 0}
+  ul.clean li{position:relative;padding:5px 0 5px 22px}
+  ul.clean li::before{content:"▸";position:absolute;left:2px;color:var(--accent);font-weight:700}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+  th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-weight:600}
+  td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:#fafbfe}
+  .pill{display:inline-block;background:var(--light);color:var(--navy);border-radius:6px;
+    padding:2px 9px;font-size:12px;font-weight:600;margin:2px 4px 2px 0}
+  .banner{background:linear-gradient(135deg,#fff4e6,#ffe8cc);border:1px solid #ffd8a8;
+    color:#8a5a00;border-radius:12px;padding:14px 18px;margin:14px 0;font-size:14px}
+  .banner b{color:#7a4d00}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+  .kbd{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .kbd b{color:var(--navy)}
+  /* quiz */
+  .mode-toggle{display:flex;gap:8px;margin:10px 0 18px}
+  .mode-toggle button{flex:1;padding:10px;border:1px solid var(--line);background:#fff;border-radius:10px;
+    font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit}
+  .mode-toggle button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .quizq{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+  .quizq .num{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.5px}
+  .quizq .prompt{font-weight:600;margin:6px 0 12px;font-size:16px}
+  .opt{display:block;width:100%;text-align:left;padding:11px 14px;margin:7px 0;border:1.5px solid var(--line);
+    background:#fff;border-radius:10px;cursor:pointer;font-family:inherit;font-size:14px;transition:.15s}
+  .opt:hover{border-color:var(--accent);background:#f5f9ff}
+  .opt.correct{border-color:var(--green);background:#e9f7ec;color:var(--green);font-weight:600}
+  .opt.wrong{border-color:var(--red);background:#fdecea;color:var(--red)}
+  .opt.disabled{pointer-events:none;opacity:.9}
+  .explain{margin-top:10px;padding:10px 14px;background:var(--grey);border-radius:9px;font-size:13.5px;color:var(--muted);display:none}
+  .explain.show{display:block}
+  .explain b{color:var(--navy)}
+  .score{position:sticky;bottom:0;background:var(--navy);color:#fff;border-radius:14px;padding:14px 20px;
+    margin-top:18px;text-align:center;font-weight:600;box-shadow:0 -2px 14px rgba(0,0,0,.12)}
+  /* flashcard */
+  .fc-wrap{perspective:1200px;margin:16px 0}
+  .fc{position:relative;width:100%;min-height:210px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .fc.flip{transform:rotateY(180deg)}
+  .fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:24px;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:var(--shadow)}
+  .fc-front{background:linear-gradient(135deg,var(--blue),var(--navy));color:#fff}
+  .fc-front .prompt{font-size:18px;font-weight:600}
+  .fc-front .hint{font-size:13px;opacity:.8;margin-top:10px}
+  .fc-back{background:#fff;border:2px solid var(--green);transform:rotateY(180deg);color:var(--ink)}
+  .fc-back .ans{font-size:16px;font-weight:700;color:var(--green);margin-bottom:8px}
+  .fc-back .exp{font-size:14px;color:var(--muted)}
+  .fc-nav{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+  .fc-nav button{background:var(--navy);color:#fff;border:none;padding:10px 20px;border-radius:10px;
+    font-weight:600;cursor:pointer;font-family:inherit}
+  .fc-nav button:disabled{opacity:.35;cursor:default}
+  .fc-count{font-weight:600;color:var(--muted)}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:30px;padding:0 20px}
+  .big-check{color:var(--green)}
+  @media(max-width:520px){.grid3{grid-template-columns:1fr 1fr}header h1{font-size:22px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">COMPETITION No. PED050 · CYCLE 2026</div>
+  <h1>ICT Teacher Exam — Study App</h1>
+  <div class="kh kh-sub">សៀវភៅត្រៀមប្រឡងគ្រូបង្រៀនវិទ្យាល័យ មុខវិជ្ជា ICT</div>
+  <div class="sub">Prepared for Hello Hoeurn · Guide + Quizzes + Flashcards + Answer Keys</div>
+</header>
+
+<nav id="nav">
+  <button class="active" data-p="home">🏠 Overview</button>
+  <button data-p="ict">💻 ICT Guide</button>
+  <button data-p="quiz">🎯 ICT Quiz</button>
+  <button data-p="flash">🃏 Flashcards</button>
+  <button data-p="gk">📚 Pedagogy</button>
+  <button data-p="gkquiz">✅ Pedagogy Quiz</button>
+  <button data-p="eng">🔤 English</button>
+  <button data-p="past">📄 Past Papers</button>
+  <button data-p="plan">🗓️ Study Plan</button>
+</nav>
+
+<main>
+<!-- ================= HOME ================= -->
+<section class="panel active" id="home">
+  <h2 class="sec">Everything in one place</h2>
+  <p class="lead">Built directly from your files: the MOEYS PED050 notice, the “Rien ICT” prep book, and the 2019 & 2022 past papers. Bilingual, works offline. Tap the tabs above.</p>
+  <div class="banner">
+    <b>⚠ Check your exam date.</b> The notice lists the written exam as <b>7 September 2026, 07:00 AM</b> at a Phnom Penh venue (report the evening before). Today is 10 Sept 2026 — confirm with your provincial MOEYS office whether this is a future/rescheduled cycle.
+  </div>
+  <h3>The three papers</h3>
+  <table>
+    <tr><th>Paper</th><th>Time</th><th>Points</th><th>Coeff.</th></tr>
+    <tr><td><b>① ICT (specialized)</b><br><span class="kh" style="font-size:13px;color:#5b6675">មុខវិជ្ជា ICT</span></td><td>2 hrs</td><td>100</td><td><b>×2</b></td></tr>
+    <tr><td><b>② Foreign Language</b><br><span class="kh" style="font-size:13px;color:#5b6675">ភាសាបរទេស (អង់គ្លេស/បារាំង)</span></td><td>1 hr</td><td>50</td><td>×1</td></tr>
+    <tr><td><b>③ General Knowledge & Pedagogy</b><br><span class="kh" style="font-size:13px;color:#5b6675">ចំណេះដឹងទូទៅ</span></td><td>1 hr</td><td>100</td><td>×1</td></tr>
+  </table>
+  <div class="card">
+    <h3 style="margin-top:0">Your edge 💪</h3>
+    <p>Your real ICT-systems work (PIES, ERP/SyteLine, BOM digitization at Pactics) is a powerful, concrete example for the pedagogy essays — “why is ICT useful?” / “how does ICT improve education?”. Most candidates can’t draw on real industry experience. Use it.</p>
+  </div>
+</section>
+
+<!-- ================= ICT GUIDE ================= -->
+<section class="panel" id="ict">
+  <h2 class="sec">ICT Specialized Paper — Study Guide</h2>
+  <p class="lead">Highest-weighted paper (×2). Past papers repeat a predictable core. Master these, then drill the quiz.</p>
+
+  <h3>1 · What is ICT?</h3>
+  <div class="qa">
+    <div class="q kh">តើ ICT ជាអ្វី?</div><div class="qe">What is ICT?</div>
+    <div class="a"><b>A:</b> <span class="kh">ICT (បច្ចេកវិទ្យាព័ត៌មាន និងសារគមនាគមន៍)</span> is the technology used to <b>collect, store, process, and share information</b> through computers and communication networks.</div>
+  </div>
+  <ul class="clean">
+    <li><b>Benefits:</b> faster communication, easier research, new jobs, better teaching & learning, connecting people worldwide.</li>
+    <li><b>ICT devices:</b> computer, smartphone, tablet, printer, router, projector, USB, radio, TV.</li>
+    <li>ICT splits into: <b>computer-based technology</b> and <b>digital communication technology</b>.</li>
+  </ul>
+
+  <h3>2 · Hardware vs Software <span style="font-size:13px;font-weight:400;color:#5b6675" class="kh">(ផ្នែករឹង / ផ្នែកទន់)</span></h3>
+  <table>
+    <tr><th>Hardware (ផ្នែករឹង)</th><th>Software (ផ្នែកទន់)</th></tr>
+    <tr><td>Physical — you can touch it</td><td>Programs / instructions — cannot be touched</td></tr>
+    <tr><td>CPU, RAM, ROM, Hard Disk, Monitor, Mouse, Keyboard, Motherboard, VGA</td><td>System SW (Windows, Linux, Mac OS) & Application SW (MS Office, browsers)</td></tr>
+  </table>
+  <p>Software has <b>two types</b>: <span class="pill">System software</span> runs the machine (the OS) · <span class="pill">Application software</span> does tasks for the user.</p>
+
+  <h3>3 · How a Computer Works — 4 Units</h3>
+  <ul class="clean">
+    <li><b>Input Unit</b> <span class="kh">(បញ្ចូល)</span> — keyboard, mouse → send data to CPU</li>
+    <li><b>CPU</b> <span class="kh">(ខួរក្បាល)</span> — processes data. Has ALU (Arithmetic & Logic Unit) + CU (Control Unit)</li>
+    <li><b>Memory Unit</b> <span class="kh">(អង្គចងចាំ)</span> — RAM holds data while the CPU works</li>
+    <li><b>Output Unit</b> <span class="kh">(បញ្ចេញ)</span> — monitor, printer → show results</li>
+  </ul>
+
+  <h3>4 · Key Hardware Terms</h3>
+  <div class="qa"><div class="q kh">RAM និង ROM ខុសគ្នាយ៉ាងណា?</div><div class="qe">RAM vs ROM?</div>
+    <div class="a"><b>RAM</b> = temporary memory, lost when power off (volatile). <b>ROM</b> = permanent, read-only, kept without power.</div></div>
+  <div class="qa"><div class="q kh">LAN និង WAN ខុសគ្នាយ៉ាងណា?</div><div class="qe">LAN vs WAN?</div>
+    <div class="a"><b>LAN</b> = small area (one building), fast. <b>WAN</b> = large area (cities/countries); the Internet is the largest WAN.</div></div>
+  <div class="qa"><div class="q kh">គ្រឿងផ្គុំកុំព្យូទ័រមានអ្វីខ្លះ?</div><div class="qe">Parts to build a computer?</div>
+    <div class="a">Motherboard, CPU, RAM, Hard Disk, VGA, Monitor, Mouse, Keyboard, Power Supply, Case.</div></div>
+
+  <h3>5 · Internet & Web <span class="kh" style="font-size:13px;font-weight:400;color:#5b6675">(អ៊ីនធឺណិត)</span></h3>
+  <div class="qa"><div class="q kh">អ៊ីនធឺណិត ជាអ្វី?</div><div class="qe">What is the Internet?</div>
+    <div class="a">The <b>world’s largest network</b> for communication and sharing information, connecting computers worldwide.</div></div>
+  <ul class="clean">
+    <li><b>Web Browser:</b> program to view web content — Chrome, Firefox, Edge, Opera (Khmer: Mekhala).</li>
+    <li><b>WWW</b> = World Wide Web · <b>Website</b> = set of web pages · <b>Homepage</b> = first page.</li>
+    <li><b>Email</b> = Electronic Mail · Google’s free email = <b>Gmail</b>.</li>
+    <li><b>Download</b> = get data from internet · <b>Upload</b> = send data to internet.</li>
+    <li><b>DHCP</b> = auto-assigns IP addresses · <b>Static</b> = IP set manually, fixed.</li>
+  </ul>
+
+  <h3>6 · Khmer Software & Open Source</h3>
+  <ul class="clean">
+    <li><b>Khmer OS fonts:</b> Khmer OS, Battambang, Bokor, Content, Moul, Siemreap, System.</li>
+    <li><b>Open Source</b> (កូដចំហ): code open, usually free — Linux, OpenOffice, Mekhala, Moyura.</li>
+    <li><b>Closed/Proprietary</b>: owned, usually paid — Microsoft (Windows, Office), Adobe (Photoshop).</li>
+    <li><b>Operating systems:</b> Windows, Mac OS X, Linux, Sun Solaris.</li>
+  </ul>
+
+  <h3>7 · Programming, Algorithms & Numbers</h3>
+  <ul class="clean">
+    <li><b>Algorithm</b> (ក្បួនដោះស្រាយ): step-by-step instructions to solve a problem.</li>
+    <li><b>Flowchart</b> (ប្លង់ប្រតិបត្តិ): diagram of an algorithm (start/end, process, decision, I/O).</li>
+    <li>Be ready to write <b>both</b> an algorithm and a flowchart, e.g. solving <b>ax + b = 0</b> (2022 paper).</li>
+    <li><b>Binary</b> (គោល ២): only 0 & 1. Practice subtraction e.g. (1000101)₂ − (101100)₂.</li>
+    <li>Know: <b>C++ Statement</b>, <b>ASP vs ASP.NET</b>, <b>Samba</b> (file/print sharing), <b>Testing</b>.</li>
+  </ul>
+
+  <h3>8 · Essential Shortcut Keys</h3>
+  <div class="grid3">
+    <div class="kbd"><b>Ctrl+S</b> Save</div><div class="kbd"><b>Ctrl+O</b> Open</div><div class="kbd"><b>Ctrl+N</b> New</div>
+    <div class="kbd"><b>Ctrl+P</b> Print</div><div class="kbd"><b>Ctrl+C</b> Copy</div><div class="kbd"><b>Ctrl+X</b> Cut</div>
+    <div class="kbd"><b>Ctrl+V</b> Paste</div><div class="kbd"><b>Ctrl+Z</b> Undo</div><div class="kbd"><b>Ctrl+Y</b> Redo</div>
+    <div class="kbd"><b>Ctrl+A</b> Select all</div><div class="kbd"><b>Ctrl+B</b> Bold</div><div class="kbd"><b>Ctrl+F</b> Find</div>
+  </div>
+</section>
+
+<!-- ================= ICT QUIZ ================= -->
+<section class="panel" id="quiz">
+  <h2 class="sec">ICT Practice Quiz</h2>
+  <p class="lead">Recurring questions from the 2016–2024 papers. Tap an answer to check it.</p>
+  <div id="quizBox"></div>
+  <div class="score" id="quizScore">Score: 0 / 0</div>
+</section>
+
+<!-- ================= FLASHCARDS ================= -->
+<section class="panel" id="flash">
+  <h2 class="sec">Flashcards</h2>
+  <p class="lead">Tap the card to flip. Use ‹ › to move through the deck.</p>
+  <div class="fc-wrap">
+    <div class="fc" id="fcard" onclick="this.classList.toggle('flip')">
+      <div class="fc-face fc-front"><div class="prompt" id="fcQ"></div><div class="hint" id="fcH"></div><div style="margin-top:14px;font-size:12px;opacity:.7">tap to flip</div></div>
+      <div class="fc-face fc-back"><div class="ans" id="fcA"></div><div class="exp" id="fcE"></div></div>
+    </div>
+  </div>
+  <div class="fc-nav">
+    <button id="fcPrev" onclick="fcMove(-1)">‹ Prev</button>
+    <span class="fc-count" id="fcCount"></span>
+    <button id="fcNext" onclick="fcMove(1)">Next ›</button>
+  </div>
+</section>
+
+<!-- ================= PEDAGOGY ================= -->
+<section class="panel" id="gk">
+  <h2 class="sec">General Knowledge & Pedagogy</h2>
+  <p class="lead">100 points, 1 hour. Teaching methods, ethics, Cambodian society/economy, and education policy.</p>
+  <h3>1 · Teaching Methods <span class="kh" style="font-size:13px;font-weight:400;color:#5b6675">(វិធីសាស្ត្របង្រៀន)</span></h3>
+  <ul class="clean">
+    <li><b>Student-centered teaching:</b> teacher facilitates; students participate, discuss, practice.</li>
+    <li><b>A lesson plan has:</b> objectives, materials, methods, activities, assessment.</li>
+    <li><b>Assessment:</b> formative (during) & summative (end of unit).</li>
+    <li><b>Active learning:</b> group work, Q&A, demonstration, project-based, ICT in class.</li>
+  </ul>
+  <h3>2 · Teacher Ethics <span class="kh" style="font-size:13px;font-weight:400;color:#5b6675">(ក្រមសីលធម៌គ្រូ)</span></h3>
+  <ul class="clean">
+    <li>Respect students, colleagues, community; treat all students equally.</li>
+    <li>Honesty, responsibility, punctuality, confidentiality of student info.</li>
+    <li>Follow MOEYS professional standards & code of conduct.</li>
+  </ul>
+  <h3>3 · Society, Economy & Policy</h3>
+  <ul class="clean">
+    <li>National education priorities: curriculum reform, ICT/digital in education, teacher-quality reform.</li>
+    <li>Key economic sectors: agriculture, garment/textile, tourism, construction.</li>
+    <li>Role of ICT in national development & modernizing education.</li>
+    <li>Policy themes: good governance, transparency, justice, effective civil service.</li>
+  </ul>
+  <h3>4 · Model Essay Prompts</h3>
+  <div class="qa"><div class="q kh">ហេតុអ្វីអ្នកចង់ក្លាយជាគ្រូ ICT?</div><div class="a">Passion for technology + desire to prepare students for a digital future; real industry experience to share.</div></div>
+  <div class="qa"><div class="q kh">ICT ជួយកែលម្អការអប់រំដូចម្តេច?</div><div class="a">Access to information, interactive lessons, distance learning, digital skills for jobs.</div></div>
+</section>
+
+<!-- ================= PEDAGOGY QUIZ ================= -->
+<section class="panel" id="gkquiz">
+  <h2 class="sec">Pedagogy Quiz</h2>
+  <p class="lead">Quick self-check on teaching concepts & policy.</p>
+  <div id="gkQuizBox"></div>
+  <div class="score" id="gkQuizScore">Score: 0 / 0</div>
+</section>
+
+<!-- ================= ENGLISH ================= -->
+<section class="panel" id="eng">
+  <h2 class="sec">Foreign Language Paper — English</h2>
+  <p class="lead">50 points, 1 hour. ICT vocabulary + practice tasks.</p>
+  <h3>Core ICT Vocabulary</h3>
+  <table>
+    <tr><th>English</th><th>Khmer</th><th>Meaning</th></tr>
+    <tr><td>Hardware</td><td class="kh">ផ្នែករឹង</td><td>Physical parts</td></tr>
+    <tr><td>Software</td><td class="kh">ផ្នែកទន់</td><td>Programs</td></tr>
+    <tr><td>Network</td><td class="kh">បណ្តាញ</td><td>Connected computers</td></tr>
+    <tr><td>Storage</td><td class="kh">ការផ្ទុក</td><td>Where data is kept</td></tr>
+    <tr><td>Download / Upload</td><td class="kh">ទាញយក / ផ្ទុកឡើង</td><td>Receive / send online</td></tr>
+    <tr><td>Browser</td><td class="kh">កម្មវិធីរុករក</td><td>Access the web</td></tr>
+    <tr><td>Website</td><td class="kh">គេហទំព័រ</td><td>Set of web pages</td></tr>
+  </table>
+  <h3>Practice Tasks</h3>
+  <ul class="clean">
+    <li><b>Reading:</b> read a short tech paragraph, answer comprehension questions.</li>
+    <li><b>Grammar:</b> present/past simple, articles (a/an/the), prepositions.</li>
+    <li><b>Writing:</b> 5–8 sentences — “Why do you want to be a teacher?”</li>
+    <li><b>Vocabulary:</b> define each ICT word above and use it in a sentence.</li>
+  </ul>
+  <div class="card"><b>Sample prompt:</b> “Explain in a short paragraph how computers help students learn.” Keep sentences short and correct rather than long and risky.</div>
+</section>
+
+<!-- ================= PAST PAPERS ================= -->
+<section class="panel" id="past">
+  <h2 class="sec">Past Paper Questions & Answers</h2>
+  <p class="lead">Real questions from the 2016–2024 competitions (with model answers). These themes repeat every year.</p>
+  <div id="pastBox"></div>
+</section>
+
+<!-- ================= PLAN ================= -->
+<section class="panel" id="plan">
+  <h2 class="sec">Study Plan & Exam-Day Tips</h2>
+  <h3>7-Day Focus</h3>
+  <ul class="clean">
+    <li><b>Days 1–3:</b> ICT core — hardware/software, 4 units, RAM/ROM, LAN/WAN.</li>
+    <li><b>Days 4–5:</b> Internet & web, Khmer software, open vs closed, shortcuts.</li>
+    <li><b>Day 6:</b> Algorithms, flowcharts, binary, basic C++.</li>
+    <li><b>Day 7:</b> Pedagogy — methods, ethics, policy.</li>
+    <li><b>Daily:</b> 20 min English vocab + one short writing task.</li>
+  </ul>
+  <h3>Exam-Day Tips</h3>
+  <ul class="clean">
+    <li>Read each question fully; note point value; manage time.</li>
+    <li>For essays: <b>define first, then give examples</b> — examiners reward examples.</li>
+    <li>For algorithm questions: always show <b>both</b> steps and diagram.</li>
+    <li>Write neatly. For English, short correct sentences beat long risky ones.</li>
+    <li>Bring ID, arrive early, confirm the venue the day before.</li>
+  </ul>
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,var(--light),#fff)">
+    <span class="kh" style="font-size:20px;font-weight:700;color:var(--navy)">សូមជូនពរឱ្យប្រឡងជាប់! 🎓</span><br>
+    <span style="color:var(--muted)">Good luck, Hello!</span>
+  </div>
+</section>
+
+<footer>
+  Compiled from the MOEYS PED050 notice, the “Rien ICT” prep book, and past papers (2016–2024).<br>
+  One offline file · open on any phone or computer.
+</footer>
+</main>
+
+<script>
+// ---------- nav ----------
+const navBtns=[...document.querySelectorAll('#nav button')];
+navBtns.forEach(b=>b.onclick=()=>{
+  navBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(b.dataset.p).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+// ---------- ICT quiz data ----------
+const ictQuiz=[
+ {q:"តើ ICT តំណាងឱ្យអ្វី? / What does ICT stand for?",o:["Information & Communication Technology","Internet Computer Technology","International Computing Tools","Information Control Technology"],c:0,e:"ICT = Information & Communication Technology (បច្ចេកវិទ្យាព័ត៌មាន និងសារគមនាគមន៍)."},
+ {q:"មួយណាជា Hardware? / Which is hardware?",o:["Microsoft Word","CPU","Google Chrome","Windows 11"],c:1,e:"Hardware (ផ្នែករឹង) is physical. CPU is hardware; the rest are software."},
+ {q:"RAM និង ROM ខុសគ្នាយ៉ាងណា? / RAM vs ROM?",o:["RAM permanent, ROM temporary","RAM loses data when power off; ROM keeps it","They are the same","ROM is only in phones"],c:1,e:"RAM is volatile (temporary); ROM is non-volatile (permanent, read-only)."},
+ {q:"កុំព្យូទ័រដំណើរការមានប៉ុន្មានផ្នែក? / How many units make a computer work?",o:["2","3","4","5"],c:2,e:"Four: Input, CPU, Memory, Output."},
+ {q:"គ្រាប់ចុចកាត់សម្រាប់ Copy? / Shortcut to Copy?",o:["Ctrl + X","Ctrl + V","Ctrl + C","Ctrl + Z"],c:2,e:"Ctrl+C = Copy (X=Cut, V=Paste, Z=Undo)."},
+ {q:"ប្រព័ន្ធប្រតិបត្តិការណាមួយ Open Source? / Which OS is open source?",o:["Windows","Mac OS X","Linux","MS-DOS"],c:2,e:"Linux is free & open source; Windows and Mac are proprietary."},
+ {q:"Web Browser ជាអ្វី? / What is a web browser?",o:["A storage device","A program to view info on the Internet","A printer","An OS"],c:1,e:"A browser opens & views web content — Chrome, Firefox, Edge."},
+ {q:"DHCP ធ្វើអ្វី? / What does DHCP do?",o:["Assigns IP addresses automatically","Stores files","Prints documents","Sets IP manually"],c:0,e:"DHCP auto-assigns IPs; Static is manual/fixed."},
+ {q:"Algorithm ជាអ្វី? / What is an algorithm?",o:["A computer part","Step-by-step instructions to solve a problem","A type of memory","A language"],c:1,e:"An algorithm (ក្បួនដោះស្រាយ) is ordered steps; a flowchart is its diagram."},
+ {q:"Binary ប្រើលេខអ្វីខ្លះ? / Binary uses which digits?",o:["0–9","1–10","0 and 1","0–16"],c:2,e:"Binary (គោល ២) uses only 0 and 1."}
+];
+const gkQuiz=[
+ {q:"Student-centered teaching means: / ការបង្រៀនផ្តោតលើសិស្ស មានន័យថា៖",o:["Teacher lectures the whole time","Students actively participate; teacher facilitates","No assessment is used","Only textbooks are used"],c:1,e:"The teacher facilitates; students discuss and practice actively."},
+ {q:"A complete lesson plan includes: / ផែនការបង្រៀនល្អមាន៖",o:["Only the topic","Objectives, materials, methods, activities, assessment","Only homework","Only the exam"],c:1,e:"Objectives, materials, methods, activities, and assessment."},
+ {q:"Assessment during learning is called: / ការវាយតម្លៃពេលរៀនហៅថា៖",o:["Summative","Formative","Final","None"],c:1,e:"Formative = during learning; summative = end of a unit."},
+ {q:"Which is a key quality of a good teacher? / គុណសម្បត្តិគ្រូល្អ?",o:["Favoritism","Fair & equal treatment of all students","Ignoring weak students","Being late"],c:1,e:"Fairness, equal treatment, ethics, and subject mastery."},
+ {q:"A major manufacturing sector in Cambodia: / វិស័យផលិតកម្មសំខាន់នៅកម្ពុជា៖",o:["Garment/textile","Oil refining","Car manufacturing","Steel milling"],c:0,e:"Garment/textile is a leading Cambodian sector (alongside agriculture, tourism, construction)."}
+];
+const pastPapers=[
+ {y:"2016",q:"វិទ្យាសាស្ត្រព័ត៌មាន និងសារគមនាគមន៍ គឺជាអ្វី? / What is ICT?",a:"Technology that provides information via digital devices, so people & organizations can access information easily."},
+ {y:"2016",q:"កុំព្យូទ័រដំណើរការបានលុះត្រាមានប៉ុន្មានផ្នែក? / A computer works through how many units?",a:"Four: Input, CPU (processing), Memory, Output."},
+ {y:"2017",q:"ហេតុអ្វីត្រូវប្រើកម្មវិធីភាសាខ្មែរ? / Why use Khmer-language software?",a:"To display & search information in Khmer, making computers usable for Khmer speakers (e.g. Khmer OS, Mekhala)."},
+ {y:"2017",q:"ចូរប្រៀបធៀប Hardware និង Software។ / Compare hardware & software.",a:"Hardware = physical parts (CPU, RAM, monitor). Software = programs/instructions (Windows, MS Office)."},
+ {y:"2018",q:"រកភាពខុសគ្នារវាង RAM និង ROM។ / Difference between RAM and ROM.",a:"RAM = temporary, lost on power-off. ROM = permanent, read-only, retained without power."},
+ {y:"2019",q:"ដើម្បីជ្រើសទិញកុំព្យូទ័រ គួរត្រូវពិនិត្យអ្វី? / What to check when buying a computer?",a:"RAM size, CPU speed, Hard Disk (storage), VGA, and the screen — match to your needs."},
+ {y:"2019",q:"ចូរប្រាប់ពីឈ្មោះ Khmer OS fonts។ / Name Khmer OS fonts.",a:"Khmer OS, Battambang, Bokor, Content, Fasthand, Moul, Moul Light, Siemreap, System."},
+ {y:"2022",q:"ចូរពន្យល់ Assign IP Address ដោយ DHCP និង Static។ / DHCP vs Static IP?",a:"DHCP assigns IPs automatically on the network; Static means the IP is set manually and stays fixed."},
+ {y:"2022",q:"ចូរសរសេរ Algorithm និង Flowchart ដោះស្រាយ ax + b = 0។ / Algorithm & flowchart for ax+b=0.",a:"Steps: 1) Start 2) Input a,b 3) If a=0 → no unique solution 4) Else x = −b/a 5) Output x 6) End. Draw the matching flowchart with a decision diamond for a=0."},
+ {y:"2022",q:"តើ Samba គឺជាអ្វី? / What is Samba?",a:"Samba is software that provides file & print sharing between Linux/Unix and Windows systems on a network."},
+ {y:"2024",q:"អ៊ីនធឺណិត (Internet) ជាអ្វី? / What is the Internet?",a:"The world's largest network for communication and sharing information, connecting computers globally."},
+ {y:"2024",q:"ឱ្យនិយមន័យ Download និង Upload។ / Define Download and Upload.",a:"Download = bring data from the Internet to your device. Upload = send data from your device to the Internet."}
+];
+
+// ---------- render quiz ----------
+function renderQuiz(data,boxId,scoreId){
+  const box=document.getElementById(boxId);let answered=0,correct=0;
+  data.forEach((item,i)=>{
+    const div=document.createElement('div');div.className='quizq';
+    div.innerHTML=`<div class="num">QUESTION ${i+1}</div><div class="prompt kh">${item.q}</div>`;
+    item.o.forEach((opt,j)=>{
+      const b=document.createElement('button');b.className='opt';b.textContent=String.fromCharCode(65+j)+'. '+opt;
+      b.onclick=()=>{
+        [...div.querySelectorAll('.opt')].forEach(x=>x.classList.add('disabled'));
+        if(j===item.c){b.classList.add('correct');correct++;}
+        else{b.classList.add('wrong');div.querySelectorAll('.opt')[item.c].classList.add('correct');}
+        div.querySelector('.explain').classList.add('show');
+        answered++;document.getElementById(scoreId).textContent=`Score: ${correct} / ${answered}`;
+      };
+      div.appendChild(b);
+    });
+    const ex=document.createElement('div');ex.className='explain';ex.innerHTML='<b>→</b> '+item.e;div.appendChild(ex);
+    box.appendChild(div);
+  });
+}
+renderQuiz(ictQuiz,'quizBox','quizScore');
+renderQuiz(gkQuiz,'gkQuizBox','gkQuizScore');
+
+// ---------- flashcards (reuse ICT quiz) ----------
+let fcIdx=0;
+function renderFC(){
+  const c=ictQuiz[fcIdx];const card=document.getElementById('fcard');card.classList.remove('flip');
+  document.getElementById('fcQ').innerHTML=c.q;
+  document.getElementById('fcH').textContent='Options: '+c.o.join(' · ');
+  document.getElementById('fcA').textContent=c.o[c.c];
+  document.getElementById('fcE').textContent=c.e;
+  document.getElementById('fcCount').textContent=`${fcIdx+1} / ${ictQuiz.length}`;
+  document.getElementById('fcPrev').disabled=fcIdx===0;
+  document.getElementById('fcNext').disabled=fcIdx===ictQuiz.length-1;
+}
+function fcMove(d){fcIdx=Math.max(0,Math.min(ictQuiz.length-1,fcIdx+d));renderFC();}
+renderFC();
+
+// ---------- past papers ----------
+const pbox=document.getElementById('pastBox');
+pastPapers.forEach(p=>{
+  const d=document.createElement('div');d.className='qa';
+  d.innerHTML=`<div class="q kh"><span class="pill">${p.y}</span>${p.q}</div><div class="a"><b>A:</b> ${p.a}</div>`;
+  pbox.appendChild(d);
+});
+</script>
+</body>
+</html>
